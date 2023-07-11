@@ -1,0 +1,44 @@
+# conda environment description file
+#
+# Create a conda environment in which to run Jupyter Notebooks in this directory with:
+#
+#   $ conda env create -f environment.yaml
+#   $ conda activate LObecca
+#
+# To add new packages to the environment,
+# add them to the dependencies list below,
+# then update the activated environment with:
+#
+#   (Ariane)$ conda env update -f environment.yaml
+
+name: LObecca
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - arrow
+  - bottleneck
+  - cmocean
+  - dask
+  - python-dateutil
+  - jupyterlab
+  - matplotlib
+  - netCDF4
+  - numpy
+  - pandas
+  - pip
+  - python=3
+  - pytz
+  - scipy
+  - xarray=0.16.2
+  - ffmpeg
+  - IPython
+  - cartopy
+  - scikit-learn=0.24.1
+  - gsw
+  - openpyxl
+ # - sqlalchemy=1.4.49 needed to pip install this one
+ 
+ # pip install --user --editable /data1/parker/LO/lo_tools/lo_tools
