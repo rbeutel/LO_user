@@ -9,7 +9,7 @@
 # add them to the dependencies list below,
 # then update the activated environment with:
 #
-#   (Ariane)$ conda env update -f environment.yaml
+#   (LObecca)$ conda env update -f environment.yaml
 
 name: LObecca
 
@@ -26,6 +26,8 @@ dependencies:
   - jupyterlab
   - matplotlib
   - netCDF4
+  - netcdf-fortran
+  - gfortran
   - numpy
   - pandas
   - pip
