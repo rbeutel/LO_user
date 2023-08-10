@@ -154,3 +154,6 @@ cython_debug/
 
 # idk what this folder is
 __pycache__/
+
+#don't need to send info about what you're gonna delete
+maybe_delete/

@@ -26,7 +26,6 @@ source_list = ['dfo1']#,'nceiSalish', 'nceiCoastal']
 otype = 'ctd'
 year = '2021'
 
-# path = Path("/data1/parker/LO_output")
 out_dir = Ldir['parent'] / 'LO_output' / 'obsmod'
 Lfun.make_dir(out_dir)
 out_fn = out_dir / ('multi_' + otype + '_' + year + '.p')
