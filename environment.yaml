@@ -42,5 +42,6 @@ dependencies:
   - gsw
   - openpyxl
  # - sqlalchemy=1.4.49 needed to pip install this one
+  # - erdappy - also needed to pip install
  
  # pip install --user --editable /data1/parker/LO/lo_tools/lo_tools
