@@ -22,7 +22,7 @@ parser.add_argument('id', type=str,
 args = parser.parse_args()
 
 id = args.id
-# print(id)
+
 
 # function to get the model file path:
 def get_his_fn_from_dt(dt):
@@ -52,8 +52,6 @@ e.constraints = None
 
 e.variables = [  
     "time",
-    "current_velocity_east",
-    "current_velocity_north",
     "current_speed_calculated",
     "current_direction_calculated",
     "Temperature",
@@ -64,6 +62,7 @@ e.variables = [
 
 df = e.to_pandas()
 df['time (UTC)'] = pd.to_datetime(df['time (UTC)'])
+print('erddap worked')
 
 # make some empty columns to fill the model data into:
 df['model_u'] = np.nan
@@ -80,19 +79,23 @@ for cid in df.index:
 
     fn = get_his_fn_from_dt(dt)
 
-    # if fn.is_file():
-    G, S, T = zrfun.get_basic_info(fn)
-    Lon = G['lon_rho'][0,:]
-    Lat = G['lat_rho'][:,0]
-    z_rho = zrfun.get_z(G['h'],np.zeros(np.shape(G['h'])),S,only_rho=True)
+    if fn.is_file():
 
-    ix = zfun.find_nearest_ind(Lon, lon)
-    iy = zfun.find_nearest_ind(Lat, lat)
-    iz = zfun.find_nearest_ind(z_rho[:,iy,ix],depth*-1)
+        G, S, T = zrfun.get_basic_info(fn)
+        Lon = G['lon_rho'][0,:]
+        Lat = G['lat_rho'][:,0]
+        z_rho = zrfun.get_z(G['h'],np.zeros(np.shape(G['h'])),S,only_rho=True)
 
-    df.loc[cid,'model_u'] = xr.open_dataset(fn).u[0,iz,iy,ix].values
-    df.loc[cid,'model_v'] = xr.open_dataset(fn).v[0,iz,iy,ix].values
-    df.loc[cid,'model_t'] = xr.open_dataset(fn).temp[0,iz,iy,ix].values + 273
+        ix = zfun.find_nearest_ind(Lon, lon)
+        iy = zfun.find_nearest_ind(Lat, lat)
+        iz = zfun.find_nearest_ind(z_rho[:,iy,ix],depth*-1)
+
+        df.loc[cid,'model_u'] = xr.open_dataset(fn).u[0,iz,iy,ix].values
+        df.loc[cid,'model_v'] = xr.open_dataset(fn).v[0,iz,iy,ix].values
+        df.loc[cid,'model_t'] = xr.open_dataset(fn).temp[0,iz,iy,ix].values + 273
+    
+    else:
+        pass
 
 # and pickle it
 name = '/data1/bbeutel/LO_output/extract_cast/onc/' + id + '.p'
