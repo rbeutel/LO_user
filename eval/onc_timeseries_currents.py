@@ -64,6 +64,13 @@ df = e.to_pandas()
 df['time (UTC)'] = pd.to_datetime(df['time (UTC)'])
 print('erddap worked')
 
+# convert to hourly - some of the mooring data is recorded every minute! wild!
+df.set_index('time (UTC)',inplace=True)
+df = df.resample('H',axis=0).mean()
+df['datetime'] = np.array(df.index)
+index = pd.Index(range(len(df)))
+df.set_index(index,inplace=True)
+
 # make some empty columns to fill the model data into:
 df['model_u'] = np.nan
 df['model_v'] = np.nan
@@ -75,7 +82,7 @@ for cid in df.index:
     lon = df.loc[cid,'longitude (degrees_east)']
     lat = df.loc[cid,'latitude (degrees_north)']
     depth = df['depth (m)'][cid]
-    dt = df['time (UTC)'][cid]
+    dt = df['datetime'][cid]
 
     fn = get_his_fn_from_dt(dt)
 
