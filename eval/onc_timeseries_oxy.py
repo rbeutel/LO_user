@@ -69,10 +69,6 @@ df['datetime'] = np.array(df.index)
 index = pd.Index(range(len(df)))
 df.set_index(index,inplace=True)
 
-# make some empty columns to fill the model data into:
-df['model_o [mmol/m3]'] = np.nan
-
-# and fill away!
 for cid in df.index:
     print(cid)
     lon = df.loc[cid,'longitude (degrees_east)']
@@ -94,7 +90,7 @@ for cid in df.index:
         iz = zfun.find_nearest_ind(z_rho[:,iy,ix],depth*-1)
 
         # cant convert units here bc dont have t, make sure to conver later
-        df['model_o  [mmol/m3'] = xr.open_dataset(fn).oxygen[0,iz,iy,ix].values
+        df['model_o [mmol/m3]'] = xr.open_dataset(fn).oxygen[0,iz,iy,ix].values
         
 
     
