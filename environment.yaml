@@ -26,6 +26,7 @@ dependencies:
   - jupyterlab
   - matplotlib
   - netCDF4
+  - nco
   - netcdf-fortran
   - gfortran
   - numpy
