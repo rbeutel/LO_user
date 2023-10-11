@@ -42,6 +42,7 @@ dependencies:
   - scikit-learn=0.24.1
   - gsw
   - openpyxl
+  - git
  # - sqlalchemy=1.4.49 needed to pip install this one
   # - erdappy - also needed to pip install
  

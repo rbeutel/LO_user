@@ -161,3 +161,4 @@ maybe_delete/
 # don't want any of the ariane output pushed
 /for*
 /back*
+output
