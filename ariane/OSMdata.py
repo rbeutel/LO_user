@@ -11,11 +11,22 @@ s19 = xr.open_dataset('./OSM/20191104/ariane_positions_quantitative.nc')
 s20 = xr.open_dataset('./OSM/20201019/ariane_positions_quantitative.nc')
 s21 = xr.open_dataset('./OSM/20211005/ariane_positions_quantitative.nc')
 
+s17T = xr.open_dataset('./OSM/no3_oxy_20171020/ariane_positions_quantitative.nc')
+s18T = xr.open_dataset('./OSM/no3_ox_20180920/ariane_positions_quantitative.nc')
+s19T = xr.open_dataset('./OSM/no3_ox_20191104/ariane_positions_quantitative.nc')
+s20T = xr.open_dataset('./OSM/no3_oxy_20201019/ariane_positions_quantitative.nc')
+s21T = xr.open_dataset('./OSM/no3_oxy_20211005/ariane_positions_quantitative.nc')
+
 # winter runs TS
 w17 = xr.open_dataset('./OSM/20180224/ariane_positions_quantitative.nc')
 w18 = xr.open_dataset('./OSM/20190416/ariane_positions_quantitative.nc')
 w19 = xr.open_dataset('./OSM/20200219/ariane_positions_quantitative.nc')
 w20 = xr.open_dataset('./OSM/20210219/ariane_positions_quantitative.nc')
+
+w17T = xr.open_dataset('./OSM/no3_oxy_20180224/ariane_positions_quantitative.nc')
+w18T = xr.open_dataset('./OSM/no3_oxy_20190416/ariane_positions_quantitative.nc')
+w19T = xr.open_dataset('./OSM/no3_oxy_20200219/ariane_positions_quantitative.nc')
+w20T = xr.open_dataset('./OSM/no3_oxy_20210219/ariane_positions_quantitative.nc')
 
 #############
 # Transport #
@@ -23,45 +34,45 @@ w20 = xr.open_dataset('./OSM/20210219/ariane_positions_quantitative.nc')
 
 # first average transport from each boundary over the whole season
 
-# def get_stats(data, section, southdiv):
-#     #function to get the average transport at each section over a given season
-#     #south div is to set up boolean for the three south water masses, 1=CUC, 2=south shelf/davidson, 3=Columbia, 0=NA 
+def get_stats(data, section, southdiv):
+    #function to get the average transport at each section over a given season
+    #south div is to set up boolean for the three south water masses, 1=CUC, 2=south shelf/davidson, 3=Columbia, 0=NA 
 
-#     if section == 0:
-#         boolean = (data.final_section == section) & ((data.init_t-data.final_t)>24) # to remove tidally pumped parcels across PRT
-#     elif section == 2:
-#         high = 33.9 # salinity division between CUC and south shelf
-#         low = 32 # salinity division between south shelf and Columbia
-#         if southdiv == 1: # CUC
-#             boolean = (data.final_section == section) & (data.final_salt >= high)
-#         elif southdiv == 2:
-#             boolean = (data.final_section == section) & (data.final_salt < high) & (data.final_salt > low)
-#         elif southdiv == 3:
-#             boolean = (data.final_section == section) & (data.final_salt <= low)
-#         else:
-#             print('the options for the southern boundary are 1=CUC, 2=south shelf/davidson, 3=Columbia')
-#     else:
-#         boolean = (data.final_section == section)
+    if section == 0:
+        boolean = (data.final_section == section) & ((data.init_t-data.final_t)>24) # to remove tidally pumped parcels across PRT
+    elif section == 2:
+        high = 33.5 # salinity division between CUC and south shelf
+        low = 32 # salinity division between south shelf and Columbia
+        if southdiv == 1: # CUC
+            boolean = (data.final_section == section) & (data.final_salt >= high)
+        elif southdiv == 2:
+            boolean = (data.final_section == section) & (data.final_salt < high) & (data.final_salt > low)
+        elif southdiv == 3:
+            boolean = (data.final_section == section) & (data.final_salt <= low)
+        else:
+            print('the options for the southern boundary are 1=CUC, 2=south shelf/davidson, 3=Columbia')
+    else:
+        boolean = (data.final_section == section)
 
-#     tran = np.sum(data.init_transp[boolean])/(np.max(data.init_t)-1440)
+    tran = np.sum(data.init_transp[boolean])/(np.max(data.init_t)-1440)
 
-#     return float(tran.values)
+    return float(tran.values)
 
-# df = {'section':['North','Offshore','CUC','South','Columbia','loop'],
-#      's17':[get_stats(s17,4,0),get_stats(s17,3,0),get_stats(s17,2,1),get_stats(s17,2,2),get_stats(s17,2,3),get_stats(s17,0,0)],
-#      's18':[get_stats(s18,4,0),get_stats(s18,3,0),get_stats(s18,2,1),get_stats(s18,2,2),get_stats(s18,2,3),get_stats(s18,0,0)],
-#      's19':[get_stats(s19,4,0),get_stats(s19,3,0),get_stats(s19,2,1),get_stats(s19,2,2),get_stats(s19,2,3),get_stats(s19,0,0)],
-#      's20':[get_stats(s20,4,0),get_stats(s20,3,0),get_stats(s20,2,1),get_stats(s20,2,2),get_stats(s20,2,3),get_stats(s20,0,0)],
-#      's21':[get_stats(s21,4,0),get_stats(s21,3,0),get_stats(s21,2,1),get_stats(s21,2,2),get_stats(s21,2,3),get_stats(s21,0,0)],
-#      'w17':[get_stats(w17,4,0),get_stats(w17,3,0),get_stats(w17,2,1),get_stats(w17,2,2),get_stats(w17,2,3),get_stats(w17,0,0)],
-#      'w18':[get_stats(w18,4,0),get_stats(w18,3,0),get_stats(w18,2,1),get_stats(w18,2,2),get_stats(w18,2,3),get_stats(w18,0,0)],
-#      'w19':[get_stats(w19,4,0),get_stats(w19,3,0),get_stats(w19,2,1),get_stats(w19,2,2),get_stats(w19,2,3),get_stats(w19,0,0)],
-#      'w20':[get_stats(w20,4,0),get_stats(w20,3,0),get_stats(w20,2,1),get_stats(w20,2,2),get_stats(w20,2,3),get_stats(w20,0,0)]}
+df = {'section':['North','Offshore','CUC','South','Columbia','loop'],
+     's17':[get_stats(s17,4,0),get_stats(s17,3,0),get_stats(s17,2,1),get_stats(s17,2,2),get_stats(s17,2,3),get_stats(s17,0,0)],
+     's18':[get_stats(s18,4,0),get_stats(s18,3,0),get_stats(s18,2,1),get_stats(s18,2,2),get_stats(s18,2,3),get_stats(s18,0,0)],
+     's19':[get_stats(s19,4,0),get_stats(s19,3,0),get_stats(s19,2,1),get_stats(s19,2,2),get_stats(s19,2,3),get_stats(s19,0,0)],
+     's20':[get_stats(s20,4,0),get_stats(s20,3,0),get_stats(s20,2,1),get_stats(s20,2,2),get_stats(s20,2,3),get_stats(s20,0,0)],
+     's21':[get_stats(s21,4,0),get_stats(s21,3,0),get_stats(s21,2,1),get_stats(s21,2,2),get_stats(s21,2,3),get_stats(s21,0,0)],
+     'w17':[get_stats(w17,4,0),get_stats(w17,3,0),get_stats(w17,2,1),get_stats(w17,2,2),get_stats(w17,2,3),get_stats(w17,0,0)],
+     'w18':[get_stats(w18,4,0),get_stats(w18,3,0),get_stats(w18,2,1),get_stats(w18,2,2),get_stats(w18,2,3),get_stats(w18,0,0)],
+     'w19':[get_stats(w19,4,0),get_stats(w19,3,0),get_stats(w19,2,1),get_stats(w19,2,2),get_stats(w19,2,3),get_stats(w19,0,0)],
+     'w20':[get_stats(w20,4,0),get_stats(w20,3,0),get_stats(w20,2,1),get_stats(w20,2,2),get_stats(w20,2,3),get_stats(w20,0,0)]}
 
-# print('dictionary made.\n')
-# trans = pd.DataFrame(df)
-# trans.to_csv('OSM/seasonal_transport.csv')
-# print('transport done.\n')
+print('dictionary made.\n')
+trans = pd.DataFrame(df)
+trans.to_csv('OSM/seasonal_transport.csv')
+print('transport done.\n')
 
 ###########
 # Tracers #
@@ -70,13 +81,15 @@ w20 = xr.open_dataset('./OSM/20210219/ariane_positions_quantitative.nc')
 
 salt = np.array([])
 temp = np.array([])
+nit = np.array([])
+oxy = np.array([])
 season = np.array([])
 year = np.array([])
 section = np.array([])
 trans = np.array([])
 depth = np.array([])
 
-def get_tracers(data,season,year):
+def get_tracers(data,dataT, season,year):
     #function to get the temperature, and salinity + section info for each parcel
     #south div is to set up boolean for the three south water masses, 1=CUC, 2=south shelf/davidson, 3=Columbia, 0=NA 
 
@@ -84,6 +97,9 @@ def get_tracers(data,season,year):
     _temp = data.final_temp
     _depth = data.final_depth
     _trans = data.final_temp/(np.max(data.init_t)-1440)
+    _nit = dataT.final_salt
+    _oxy = dataT.final_temp
+    
     
     _season = [season]*len(_salt)
     _year = [year]*len(_salt)
@@ -93,18 +109,20 @@ def get_tracers(data,season,year):
     _section =np.where(((data.final_section == 3)),'offshore',_section)
     _section =np.where(((data.final_section == 4)),'north',_section)
 
-    high = 33.9 # salinity division between CUC and south shelf
+    high = 33.5 # salinity division between CUC and south shelf
     low = 32 # salinity division between south shelf and Columbia
     _section =np.where((data.final_section == 2) & (data.final_salt >= high),'cuc',_section)
     _section =np.where((data.final_section == 2) & (data.final_salt < high) & (data.final_salt > low),'south',_section)
     _section =np.where((data.final_section == 2) & (data.final_salt <= low),'columbia',_section)
 
-    return _salt, _temp, _trans, _depth, _season, _year, _section
+    return _salt, _temp, _nit, _oxy, _trans, _depth, _season, _year, _section
 
 # summer 2017
-_salt, _temp, _transport, _depth, _season, _year, _section= get_tracers(s17, 'summer', 2017)
+_salt, _temp, _nit, _oxy, _transport, _depth, _season, _year, _section= get_tracers(s17, s17T, 'summer', 2017)
 salt = np.append(salt,_salt)
 temp = np.append(temp,_temp)
+nit = np.append(nit,_nit)
+oxy = np.append(oxy,_oxy)
 trans = np.append(trans,_transport)
 depth = np.append(depth,_depth)
 season = np.append(season,_season)
@@ -113,9 +131,11 @@ section = np.append(section,_section)
 print('s17.\n')
 
 # winter 2017
-_salt, _temp, _transport, _depth, _season, _year, _section = get_tracers(w17, 'winter', 2017)
+_salt, _temp, _nit, _oxy, _transport, _depth, _season, _year, _section = get_tracers(w17, w17T, 'winter', 2017)
 salt = np.append(salt,_salt)
 temp = np.append(temp,_temp)
+nit = np.append(nit,_nit)
+oxy = np.append(oxy,_oxy)
 trans = np.append(trans,_transport)
 depth = np.append(depth,_depth)
 season = np.append(season,_season)
@@ -124,9 +144,11 @@ section = np.append(section,_section)
 print('w17.\n')
 
 # summer 2018
-_salt, _temp, _transport, _depth, _season, _year, _section = get_tracers(s18, 'summer', 2018)
+_salt, _temp, _nit, _oxy, _transport, _depth, _season, _year, _section = get_tracers(s18, s18T, 'summer', 2018)
 salt = np.append(salt,_salt)
 temp = np.append(temp,_temp)
+nit = np.append(nit,_nit)
+oxy = np.append(oxy,_oxy)
 trans = np.append(trans,_transport)
 depth = np.append(depth,_depth)
 season = np.append(season,_season)
@@ -135,9 +157,11 @@ section = np.append(section,_section)
 print('s18.\n')
 
 # winter 2018
-_salt, _temp, _transport, _depth, _season, _year, _section = get_tracers(w18, 'winter', 2018)
+_salt, _temp, _nit, _oxy, _transport, _depth, _season, _year, _section = get_tracers(w18, w18T, 'winter', 2018)
 salt = np.append(salt,_salt)
 temp = np.append(temp,_temp)
+nit = np.append(nit,_nit)
+oxy = np.append(oxy,_oxy)
 trans = np.append(trans,_transport)
 depth = np.append(depth,_depth)
 season = np.append(season,_season)
@@ -146,9 +170,11 @@ section = np.append(section,_section)
 print('w18.\n')
 
 # summer 2019
-_salt, _temp, _transport, _depth, _season, _year, _section = get_tracers(s19, 'summer', 2019)
+_salt, _temp, _nit, _oxy, _transport, _depth, _season, _year, _section = get_tracers(s19, s19T, 'summer', 2019)
 salt = np.append(salt,_salt)
 temp = np.append(temp,_temp)
+nit = np.append(nit,_nit)
+oxy = np.append(oxy,_oxy)
 trans = np.append(trans,_transport)
 depth = np.append(depth,_depth)
 season = np.append(season,_season)
@@ -157,9 +183,11 @@ section = np.append(section,_section)
 print('s19.\n')
 
 # winter 2019
-_salt, _temp, _transport, _depth, _season, _year, _section = get_tracers(w19, 'winter', 2019)
+_salt, _temp, _nit, _oxy, _transport, _depth, _season, _year, _section = get_tracers(w19, w19T, 'winter', 2019)
 salt = np.append(salt,_salt)
 temp = np.append(temp,_temp)
+nit = np.append(nit,_nit)
+oxy = np.append(oxy,_oxy)
 trans = np.append(trans,_transport)
 depth = np.append(depth,_depth)
 season = np.append(season,_season)
@@ -168,9 +196,11 @@ section = np.append(section,_section)
 print('w19.\n')
 
 # summer 2020
-_salt, _temp, _transport, _depth, _season, _year, _section = get_tracers(s20, 'summer', 2020)
+_salt, _temp, _nit, _oxy, _transport, _depth, _season, _year, _section = get_tracers(s20, s20T, 'summer', 2020)
 salt = np.append(salt,_salt)
 temp = np.append(temp,_temp)
+nit = np.append(nit,_nit)
+oxy = np.append(oxy,_oxy)
 trans = np.append(trans,_transport)
 depth = np.append(depth,_depth)
 season = np.append(season,_season)
@@ -179,9 +209,11 @@ section = np.append(section,_section)
 print('s20.\n')
 
 # winter 2020
-_salt, _temp, _transport, _depth, _season, _year, _section = get_tracers(w20, 'winter', 2020)
+_salt, _temp, _nit, _oxy, _transport, _depth, _season, _year, _section = get_tracers(w20, w20T, 'winter', 2020)
 salt = np.append(salt,_salt)
 temp = np.append(temp,_temp)
+nit = np.append(nit,_nit)
+oxy = np.append(oxy,_oxy)
 trans = np.append(trans,_transport)
 depth = np.append(depth,_depth)
 season = np.append(season,_season)
@@ -190,9 +222,11 @@ section = np.append(section,_section)
 print('w20.\n')
 
 # summer 2021
-_salt, _temp, _transport, _depth, _season, _year, _section = get_tracers(s21, 'summer', 2021)
+_salt, _temp, _nit, _oxy, _transport, _depth, _season, _year, _section = get_tracers(s21, s21T, 'summer', 2021)
 salt = np.append(salt,_salt)
 temp = np.append(temp,_temp)
+nit = np.append(nit,_nit)
+oxy = np.append(oxy,_oxy)
 trans = np.append(trans,_transport)
 depth = np.append(depth,_depth)
 season = np.append(season,_season)
@@ -200,7 +234,7 @@ year = np.append(year,_year)
 section = np.append(section,_section)
 print('s21.\n')
 
-df = {'salt':salt, 'temperature':temp, 'transport':trans, 'depth':depth, 'season': season, 'year':year, 'section':section}
+df = {'salt':salt, 'temperature':temp, 'NO3':nit, 'oxygen': oxy, 'transport':trans, 'depth':depth, 'season': season, 'year':year, 'section':section}
 tracers = pd.DataFrame(df)
 tracers = tracers.drop(tracers[tracers.section == '0.0'].index) # drop the tidally pumped data
 tracers.to_csv('OSM/tracers.csv')
