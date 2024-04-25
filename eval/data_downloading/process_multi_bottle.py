@@ -11,25 +11,25 @@ import sys
 import pandas as pd
 import xarray as xr
 import numpy as np
-from datetime import datetime, timedelta
 import gsw
 import pickle
 from pathlib import Path
 
-from lo_tools import Lfun, zfun, zrfun
+from lo_tools import Lfun, zfun
 
-Ldir = Lfun.Lstart()
+Ldir = Lfun.Lstart()    
 
 testing = False
 
-source_list = ['dfo1']#,'nceiSalish', 'nceiCoastal']
-otype = 'ctd'
-year = '2021'
+source_list = ['dfo1','LineP','nceiSalish']# 'dfo1','ecology','LineP','nceiSalish','nceiCoastal','nceiPNW','NHL'
+otype = 'bottle'
+year = '2018'
+gtx_list = ['cas7_t0_x4b']#cas6_v0_live cas7_t0_x4b
 
-out_dir = Ldir['parent'] / 'LO_output' / 'obsmod'
+out_dir = Ldir['parent'] / 'LO_output' / 'obsmod' / gtx_list[0]
 Lfun.make_dir(out_dir)
 out_fn = out_dir / ('multi_' + otype + '_' + year + '.p')
-gtx_list = ['cas6_v0_live']#, 'cas6_traps2_x2b', 'cas2k_v0_x2b']
+
 
 # initialize a dict of empty DataFrames that we will concatenate on
 df_dict = {}
@@ -60,9 +60,9 @@ for source in source_list:
     
     mod_dir_dict = {}
     for gtx in gtx_list:
-        mod_dir_dict[gtx] = (Ldir['LOo'] / 'extract_cast' /
+        mod_dir_dict[gtx] = (Ldir['LOo'] / 'extract' / gtx_list[0] / 'cast' /
         (source + '_' + otype + '_' + year))
-
+    print(mod_dir_dict[gtx])
     # Fill DataFrames with model extractions, matching the format of the observations.
 
     for gtx in gtx_list:

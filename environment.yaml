@@ -32,14 +32,14 @@ dependencies:
   - numpy
   - pandas
   - pip
-  - python=3
+  - python=3.11
   - pytz
   - scipy
-  - xarray=0.16.2
+  - xarray
   - ffmpeg
   - IPython
   - cartopy
-  - scikit-learn=0.24.1
+  - scikit-learn
   - gsw
   - openpyxl
  # - sqlalchemy=1.4.49 needed to pip install this one
