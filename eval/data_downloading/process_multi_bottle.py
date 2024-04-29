@@ -21,9 +21,9 @@ Ldir = Lfun.Lstart()
 
 testing = False
 
-source_list = ['dfo1','LineP','nceiSalish']# 'dfo1','ecology','LineP','nceiSalish','nceiCoastal','nceiPNW','NHL'
+source_list = ['dfo1','LineP']# 'dfo1','ecology','LineP','nceiSalish','nceiCoastal','nceiPNW','NHL'
 otype = 'bottle'
-year = '2018'
+year = '2019'
 gtx_list = ['cas7_t0_x4b']#cas6_v0_live cas7_t0_x4b
 
 out_dir = Ldir['parent'] / 'LO_output' / 'obsmod' / gtx_list[0]
