@@ -4,6 +4,7 @@
 
 # run:
 # python3 current_match.py -id
+# ex. python3 onc_timeseries_ctd.py scalar_1196717
 
 import argparse
 from erddapy import ERDDAP
@@ -28,7 +29,7 @@ id = args.id
 # function to get the model file path:
 def get_his_fn_from_dt(dt):
 
-    path = Path("/data1/parker/LO_roms")
+    path = Path("/agdat1/parker/LO_roms")
     # This creates the Path of a history file from its datetime
     if dt.hour == 0:
         # perfect restart does not write the 0001 file
@@ -37,7 +38,7 @@ def get_his_fn_from_dt(dt):
     else:
         his_num = ('0000' + str(dt.hour + 1))[-4:]
     date_string = dt.strftime('%Y.%m.%d')
-    fn = path / 'cas6_v0_live' / ('f' + date_string) / ('ocean_his_' + his_num + '.nc')
+    fn = path / 'cas7_t0_x4b' / ('f' + date_string) / ('ocean_his_' + his_num + '.nc')
     return fn
 
 
@@ -53,8 +54,6 @@ e.constraints = None
 
 e.variables = [  
     "time",
-    "density",
-    "SIGMA_THETA",
     "salinity",
     "Temperature",
     "Pressure",
@@ -69,7 +68,7 @@ print('erddap worked')
 
 # convert to hourly - some of the mooring data is recorded every minute! wild!
 df.set_index('time (UTC)',inplace=True)
-df = df.resample('H',axis=0).mean()
+df = df.resample('h',axis=0).mean()
 df['datetime'] = np.array(df.index)
 index = pd.Index(range(len(df)))
 df.set_index(index,inplace=True)
@@ -103,7 +102,9 @@ for cid in df.index:
         p = gsw.p_from_z(depth, lat)
         #convert to observation units:
         df.loc[cid,'model_s'] = gsw.SP_from_SA(s,depth,lon,lat) # practical salinity
+        print(df.loc[cid,'model_s'])
         df.loc[cid,'model_t'] = xr.open_dataset(fn).temp[0,iz,iy,ix].values + 273 # kelvin
+        print(df.loc[cid,'model_t'])
     
     else:
         pass

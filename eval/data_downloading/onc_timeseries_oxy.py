@@ -27,7 +27,7 @@ id = args.id
 # function to get the model file path:
 def get_his_fn_from_dt(dt):
 
-    path = Path("/data1/parker/LO_roms")
+    path = Path("/agdat1/parker/LO_roms")
     # This creates the Path of a history file from its datetime
     if dt.hour == 0:
         # perfect restart does not write the 0001 file
@@ -36,7 +36,7 @@ def get_his_fn_from_dt(dt):
     else:
         his_num = ('0000' + str(dt.hour + 1))[-4:]
     date_string = dt.strftime('%Y.%m.%d')
-    fn = path / 'cas6_v0_live' / ('f' + date_string) / ('ocean_his_' + his_num + '.nc')
+    fn = path / 'cas7_t0_x4b' / ('f' + date_string) / ('ocean_his_' + his_num + '.nc')
     return fn
 
 
@@ -64,10 +64,13 @@ print('erddap worked')
 
 # convert to hourly - some of the mooring data is recorded every minute! wild!
 df.set_index('time (UTC)',inplace=True)
-df = df.resample('H',axis=0).mean()
+df = df.resample('h',axis=0).mean()
 df['datetime'] = np.array(df.index)
 index = pd.Index(range(len(df)))
 df.set_index(index,inplace=True)
+
+# make some empty columns to fill the model data into:
+df['model_o'] = np.nan
 
 for cid in df.index:
     print(cid)
@@ -91,6 +94,7 @@ for cid in df.index:
 
         # convert to observed units
         df.loc[cid,'model_o'] = xr.open_dataset(fn).oxygen[0,iz,iy,ix].values / 44.661 # convert mmol/m3 to ml/l
+        print(df.loc[cid,'model_o'])
     
     else:
         pass

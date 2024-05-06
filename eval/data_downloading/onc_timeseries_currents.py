@@ -27,7 +27,7 @@ id = args.id
 # function to get the model file path:
 def get_his_fn_from_dt(dt):
 
-    path = Path("/data1/parker/LO_roms")
+    path = Path("/agdat1/parker/LO_roms")
     # This creates the Path of a history file from its datetime
     if dt.hour == 0:
         # perfect restart does not write the 0001 file
@@ -36,7 +36,7 @@ def get_his_fn_from_dt(dt):
     else:
         his_num = ('0000' + str(dt.hour + 1))[-4:]
     date_string = dt.strftime('%Y.%m.%d')
-    fn = path / 'cas6_v0_live' / ('f' + date_string) / ('ocean_his_' + his_num + '.nc')
+    fn = path / 'cas7_t0_x4b' / ('f' + date_string) / ('ocean_his_' + his_num + '.nc')
     return fn
 
 
@@ -98,13 +98,15 @@ for cid in df.index:
         iz = zfun.find_nearest_ind(z_rho[:,iy,ix],depth*-1)
 
         df.loc[cid,'model_u'] = xr.open_dataset(fn).u[0,iz,iy,ix].values
+        print(df.loc[cid,'model_u'])
         df.loc[cid,'model_v'] = xr.open_dataset(fn).v[0,iz,iy,ix].values
+        print(df.loc[cid,'model_v'])
         df.loc[cid,'model_t'] = xr.open_dataset(fn).temp[0,iz,iy,ix].values + 273
     
     else:
         pass
 
 # and pickle it
-name = '/data1/bbeutel/LO_output/extract_cast/onc/' + id + '.p'
+name = '/data1/bbeutel/LO_output/extract_cast/onc/' + id + '_uv.p'
 print(name)
 df.to_pickle(name)

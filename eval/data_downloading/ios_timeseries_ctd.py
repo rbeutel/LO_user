@@ -29,7 +29,7 @@ print(profiles)
 # function to get the model file path:
 def get_his_fn_from_dt(dt):
 
-    path = Path("/data1/parker/LO_roms")
+    path = Path("/agdat1/parker/LO_roms")
     # This creates the Path of a history file from its datetime
     if dt.hour == 0:
         # perfect restart does not write the 0001 file
@@ -38,7 +38,7 @@ def get_his_fn_from_dt(dt):
     else:
         his_num = ('0000' + str(dt.hour + 1))[-4:]
     date_string = dt.strftime('%Y.%m.%d')
-    fn = path / 'cas6_v0_live' / ('f' + date_string) / ('ocean_his_' + his_num + '.nc')
+    fn = path / 'cas7_t0_x4b' / ('f' + date_string) / ('ocean_his_' + his_num + '.nc')
     return fn
 
 df = pd.DataFrame()
@@ -51,7 +51,7 @@ for profile in profiles:
 
     e.response = "nc"
     e.dataset_id = "IOS_CTD_Moorings"
-    e.constraints = {'profile=':profile,'time>=': '2016-12-18T00:00:00Z', 'time<=': '2023-05-23T23:00:00Z'}
+    e.constraints = {'profile=':profile,'time>=': '2012-12-31T00:00:00Z', 'time<=': '2024-01-01T00:00:00Z'}
 
     e.variables = [  
         "time",

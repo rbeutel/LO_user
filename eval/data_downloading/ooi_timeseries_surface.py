@@ -3,7 +3,7 @@
 #####################################################
 
 # run:
-# python3 ios_timeseries_ctd.py -profile -num (ex. ooi-ce06issm 17)
+# python3 ooi_timeseries_ctd.py  ooi-ce06issm
 
 import argparse
 from erddapy import ERDDAP
@@ -44,37 +44,37 @@ def get_his_fn_from_dt(dt):
 # more confusing for OOI bc the data is fit into different profile names despite being from the same mooring
 # so need to download from erdapp many times and append together
 
-num1 = str(12)
-num2 = str(11)
+num1 = str(17)
+num2 = str(17)
 #         nearsurface CTD,           nearsurface velocity
-# suffix = ['-sbd'+num1+'-06-ctdbpc000','-sbd'+num2+'-04-velpta000']
-suffix = ['-sbd11-04-velpta000']
+suffix = ['-sbd'+num1+'-06-ctdbpc000','-sbd'+num2+'-04-velpta000']
+# suffix = ['-sbd11-04-velpta000']
 
 
-# # CTD first
-# e = ERDDAP(
-#   server="http://erddap.dataexplorer.oceanobservatories.org/erddap",
-#   protocol="tabledap",
-# )
-# e.response = "nc"
-# e.dataset_id = id + suffix[0]
-# e.constraints = {'time>=': '2016-12-18T00:00:00Z', 'time<=': '2023-05-23T23:00:00Z'}
-# e.variables = [  
-#     "time",
-#     "longitude",
-#     "latitude",
-#     "sea_water_pressure",
-#     "sea_water_density",
-#     "sea_water_temperature",
-#     "sea_water_practical_salinity"
-# ]
-# df = e.to_pandas()
-# df['time (UTC)'] = pd.to_datetime(df['time (UTC)'])
-# # convert to hourly - some of the mooring data is recorded every minute! wild!
-# df.set_index('time (UTC)',inplace=True)
-# df = df.resample('H',axis=0).mean()
-# # print('CTD length= '+str(len(df))+', date range= '+str(np.min(df.datetime))+'-'+str(np.max(df.datetime)))
-# d_ctd = df
+# CTD first
+e = ERDDAP(
+  server="http://erddap.dataexplorer.oceanobservatories.org/erddap",
+  protocol="tabledap",
+)
+e.response = "nc"
+e.dataset_id = id + suffix[0]
+e.constraints = {'time>=': '2012-12-31T00:00:00Z', 'time<=': '2024-01-01T00:00:00Z'}
+e.variables = [  
+    "time",
+    "longitude",
+    "latitude",
+    "sea_water_pressure",
+    "sea_water_density",
+    "sea_water_temperature",
+    "sea_water_practical_salinity"
+]
+df = e.to_pandas()
+df['time (UTC)'] = pd.to_datetime(df['time (UTC)'])
+# convert to hourly - some of the mooring data is recorded every minute! wild!
+df.set_index('time (UTC)',inplace=True)
+df = df.resample('h',axis=0).mean()
+# print('CTD length= '+str(len(df))+', date range= '+str(np.min(df.datetime))+'-'+str(np.max(df.datetime)))
+d_ctd = df
 
 
 # then velocity
@@ -83,8 +83,8 @@ e = ERDDAP(
   protocol="tabledap",
 )
 e.response = "nc"
-e.dataset_id = id + suffix[0]
-e.constraints = {'time>=': '2016-12-18T00:00:00Z', 'time<=': '2023-05-23T23:00:00Z'}
+e.dataset_id = id + suffix[1]
+e.constraints = {'time>=': '2012-12-31T00:00:00Z', 'time<=': '2024-01-01T01:00:00Z'}
 e.variables = [  
     "time",
     "longitude",
@@ -99,11 +99,11 @@ df = e.to_pandas()
 df['time (UTC)'] = pd.to_datetime(df['time (UTC)'])
 # convert to hourly - some of the mooring data is recorded every minute! wild!
 df.set_index('time (UTC)',inplace=True)
-df = df.resample('H',axis=0).mean()
+df = df.resample('h',axis=0).mean()
 # print('Velocity length= '+str(len(df))+', date range= '+str(np.min(df.datetime))+'-'+str(np.max(df.datetime)))
-# d_v = df
+d_v = df
 
-# df = pd.concat([d_ctd, d_v], axis=1)
+df = pd.concat([d_ctd, d_v], axis=1)
 df['datetime'] = np.array(df.index)
 index = pd.Index(range(len(df)))
 df.set_index(index,inplace=True)

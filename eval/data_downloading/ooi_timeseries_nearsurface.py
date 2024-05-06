@@ -3,7 +3,8 @@
 #####################################################
 
 # run:
-# python3 ios_timeseries_ctd.py -profile -num (ex. ooi-ce06issm 16)
+# python3 ooi_timeseries_nearsurface.py -id -num1 -num2 (ex. ooi-ce06issm 16 16)
+# make sure to change num1 and num2
 
 import argparse
 from erddapy import ERDDAP
@@ -20,14 +21,20 @@ from lo_tools import zfun, zrfun
 parser = argparse.ArgumentParser(description='Get and match ERDAPP data from ONC.')
 parser.add_argument('id', type=str,
                     help='asset id (lowercase)')
+parser.add_argument('num1', type=str,
+                    help='num1 (interger string)')
+parser.add_argument('num2', type=str,
+                    help='num2 (interger string)')
 args = parser.parse_args()
 
 id = args.id
+num1 = args.num1
+num2 = args.num2
 
 # function to get the model file path:
 def get_his_fn_from_dt(dt):
 
-    path = Path("/data1/parker/LO_roms")
+    path = Path("/agdat1/parker/LO_roms")
     # This creates the Path of a history file from its datetime
     if dt.hour == 0:
         # perfect restart does not write the 0001 file
@@ -36,7 +43,7 @@ def get_his_fn_from_dt(dt):
     else:
         his_num = ('0000' + str(dt.hour + 1))[-4:]
     date_string = dt.strftime('%Y.%m.%d')
-    fn = path / 'cas6_v0_live' / ('f' + date_string) / ('ocean_his_' + his_num + '.nc')
+    fn = path / 'cas7_t0_x4b' / ('f' + date_string) / ('ocean_his_' + his_num + '.nc')
     return fn
 
 
@@ -44,8 +51,8 @@ def get_his_fn_from_dt(dt):
 # more confusing for OOI bc the data is fit into different profile names despite being from the same mooring
 # so need to download from erdapp many times and append together
 
-num1 = str(27)
-num2 = str(26)
+# num1 = str(27)
+# num2 = str(26)
 #         nearsurface CTD,           nearsurface velocity,      near surface oxygen,        near surface nitrate
 suffix = ['-rid'+num1+'-03-ctdbpc000','-rid'+num2+'-04-velpta000','-rid'+num1+'-04-dostad000', '-rid'+num2+'-07-nutnrb000']
 
@@ -57,7 +64,7 @@ e = ERDDAP(
 )
 e.response = "nc"
 e.dataset_id = id + suffix[0]
-e.constraints = {'time>=': '2016-12-18T00:00:00Z', 'time<=': '2023-05-23T23:00:00Z'}
+e.constraints = {'time>=': '2012-12-31T00:00:00Z', 'time<=': '2024-01-01T00:00:00Z'}
 e.variables = [  
     "time",
     "longitude",
@@ -71,7 +78,7 @@ df = e.to_pandas()
 df['time (UTC)'] = pd.to_datetime(df['time (UTC)'])
 # convert to hourly - some of the mooring data is recorded every minute! wild!
 df.set_index('time (UTC)',inplace=True)
-df = df.resample('H',axis=0).mean()
+df = df.resample('h',axis=0).mean()
 # print('CTD length= '+str(len(df))+', date range= '+str(np.min(df.datetime))+'-'+str(np.max(df.datetime)))
 d_ctd = df
 
@@ -83,7 +90,7 @@ e = ERDDAP(
 )
 e.response = "nc"
 e.dataset_id = id + suffix[1]
-e.constraints = {'time>=': '2016-12-18T00:00:00Z', 'time<=': '2023-05-23T23:00:00Z'}
+e.constraints = {'time>=': '2012-12-31T00:00:00Z', 'time<=': '2024-01-01T00:00:00Z'}
 e.variables = [  
     "time",
     "eastward_sea_water_velocity",
@@ -94,7 +101,7 @@ df = e.to_pandas()
 df['time (UTC)'] = pd.to_datetime(df['time (UTC)'])
 # convert to hourly - some of the mooring data is recorded every minute! wild!
 df.set_index('time (UTC)',inplace=True)
-df = df.resample('H',axis=0).mean()
+df = df.resample('h',axis=0).mean()
 # print('Velocity length= '+str(len(df))+', date range= '+str(np.min(df.datetime))+'-'+str(np.max(df.datetime)))
 d_v = df
 
@@ -105,7 +112,7 @@ e = ERDDAP(
 )
 e.response = "nc"
 e.dataset_id = id + suffix[2]
-e.constraints = {'time>=': '2016-12-18T00:00:00Z', 'time<=': '2023-05-23T23:00:00Z'}
+e.constraints = {'time>=': '2012-12-31T00:00:00Z', 'time<=': '2024-01-01T00:00:00Z'}
 e.variables = [  
     "time",
     "mole_concentration_of_dissolved_molecular_oxygen_in_sea_water"
@@ -114,7 +121,7 @@ df = e.to_pandas()
 df['time (UTC)'] = pd.to_datetime(df['time (UTC)'])
 # convert to hourly - some of the mooring data is recorded every minute! wild!
 df.set_index('time (UTC)',inplace=True)
-df = df.resample('H',axis=0).mean()
+df = df.resample('h',axis=0).mean()
 # print('Oxygen length= '+str(len(df))+', date range= '+str(np.min(df.datetime))+'-'+str(np.max(df.datetime)))
 d_o = df
 
@@ -126,7 +133,7 @@ e = ERDDAP(
 )
 e.response = "nc"
 e.dataset_id = id + suffix[3]
-e.constraints = {'time>=': '2016-12-18T00:00:00Z', 'time<=': '2023-05-23T23:00:00Z'}
+e.constraints = {'time>=': '2012-12-31T00:00:00Z', 'time<=': '2024-01-01T00:00:00Z'}
 e.variables = [  
     "time",
     "mole_concentration_of_nitrate_in_sea_water",
@@ -136,7 +143,7 @@ df = e.to_pandas()
 df['time (UTC)'] = pd.to_datetime(df['time (UTC)'])
 # convert to hourly - some of the mooring data is recorded every minute! wild!
 df.set_index('time (UTC)',inplace=True)
-df = df.resample('H',axis=0).mean()
+df = df.resample('h',axis=0).mean()
 # print('Nitrate length= '+str(len(df))+', date range= '+str(np.min(df.datetime))+'-'+str(np.max(df.datetime)))
 d_n = df
 
@@ -177,18 +184,18 @@ for cid in df.index:
         iy = zfun.find_nearest_ind(Lat, lat)
         iz = zfun.find_nearest_ind(z_rho[:,iy,ix],depth)
 
-        s = xr.open_dataset(fn).salt[0,iz,iy,ix].values
-        p = gsw.p_from_z(depth, lat)
-        #convert to observation units:
-        df.loc[cid,'model_s'] = gsw.SP_from_SA(s,depth,lon,lat) # practical salinity
-        df.loc[cid,'model_t'] = xr.open_dataset(fn).temp[0,iz,iy,ix].values # celcius already
-        df.loc[cid,'model_o'] = xr.open_dataset(fn).oxygen[0,iz,iy,ix].values
-        df.loc[cid,'model_n'] = xr.open_dataset(fn).NO3[0,iz,iy,ix].values
-        df.loc[cid,'model_u'] = xr.open_dataset(fn).u[0,iz,iy,ix].values 
-        df.loc[cid,'model_v'] = xr.open_dataset(fn).v[0,iz,iy,ix].values
-        df.loc[cid,'model_w'] = xr.open_dataset(fn).w[0,iz,iy,ix].values
+        with xr.open_dataset(fn) as f:
+            s = f.salt[0,iz,iy,ix].values
+            p = gsw.p_from_z(depth, lat)
+            #convert to observation units:
+            df.loc[cid,'model_s'] = gsw.SP_from_SA(s,p,lon,lat) # practical salinity
+            df.loc[cid,'model_t'] = f.temp[0,iz,iy,ix].values # celcius already
+            df.loc[cid,'model_o'] = f.oxygen[0,iz,iy,ix].values
+            df.loc[cid,'model_n'] = f.NO3[0,iz,iy,ix].values
+            df.loc[cid,'model_u'] = f.u[0,iz,iy,ix].values 
+            df.loc[cid,'model_v'] = f.v[0,iz,iy,ix].values
+            df.loc[cid,'model_w'] = f.w[0,iz,iy,ix].values
 
-    
     else:
         pass
 
