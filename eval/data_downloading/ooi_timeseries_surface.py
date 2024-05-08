@@ -3,7 +3,7 @@
 #####################################################
 
 # run:
-# python3 ooi_timeseries_ctd.py  ooi-ce06issm
+# python3 ooi_timeseries_ctd.py ooi-ce06issm 17
 
 import argparse
 from erddapy import ERDDAP
@@ -20,14 +20,17 @@ from lo_tools import zfun, zrfun
 parser = argparse.ArgumentParser(description='Get and match ERDAPP data from ONC.')
 parser.add_argument('id', type=str,
                     help='asset id (lowercase)')
+parser.add_argument('num1', type=str,
+                    help='num1 (interger string)')
 args = parser.parse_args()
 
 id = args.id
+num1 = args.num1
 
 # function to get the model file path:
 def get_his_fn_from_dt(dt):
 
-    path = Path("/data1/parker/LO_roms")
+    path = Path("/agdat1/parker/LO_roms")
     # This creates the Path of a history file from its datetime
     if dt.hour == 0:
         # perfect restart does not write the 0001 file
@@ -36,7 +39,7 @@ def get_his_fn_from_dt(dt):
     else:
         his_num = ('0000' + str(dt.hour + 1))[-4:]
     date_string = dt.strftime('%Y.%m.%d')
-    fn = path / 'cas6_v0_live' / ('f' + date_string) / ('ocean_his_' + his_num + '.nc')
+    fn = path / 'cas7_t0_x4b' / ('f' + date_string) / ('ocean_his_' + his_num + '.nc')
     return fn
 
 
@@ -44,10 +47,10 @@ def get_his_fn_from_dt(dt):
 # more confusing for OOI bc the data is fit into different profile names despite being from the same mooring
 # so need to download from erdapp many times and append together
 
-num1 = str(17)
-num2 = str(17)
+# num1 = str(17)
+# num2 = str(17)
 #         nearsurface CTD,           nearsurface velocity
-suffix = ['-sbd'+num1+'-06-ctdbpc000','-sbd'+num2+'-04-velpta000']
+suffix = ['-sbd'+num1+'-06-ctdbpc000','-sbd'+num1+'-04-velpta000']
 # suffix = ['-sbd11-04-velpta000']
 
 
@@ -103,7 +106,7 @@ df = df.resample('h',axis=0).mean()
 # print('Velocity length= '+str(len(df))+', date range= '+str(np.min(df.datetime))+'-'+str(np.max(df.datetime)))
 d_v = df
 
-df = pd.concat([d_ctd, d_v], axis=1)
+df = pd.concat([d_ctd, d_v]) #, axis=1) <- remove because results in duplicate columns
 df['datetime'] = np.array(df.index)
 index = pd.Index(range(len(df)))
 df.set_index(index,inplace=True)
@@ -122,7 +125,8 @@ for cid in df.index:
     print(cid)
     lon = df.loc[cid,'longitude (degrees_east)']
     lat = df.loc[cid,'latitude (degrees_north)']
-    depth = gsw.z_from_p(df['sea_water_pressure (decibars)'][cid],lat,lon)
+    p = df.loc[cid,'sea_water_pressure (decibars)']
+    depth = gsw.z_from_p(p,lat,lon)
     dt = df['datetime'][cid]
 
     fn = get_his_fn_from_dt(dt)
@@ -140,7 +144,7 @@ for cid in df.index:
 
         with xr.open_dataset(fn) as f:
             s = f.salt[0,iz,iy,ix].values
-            p = gsw.p_from_z(depth, lat)
+            # p = gsw.p_from_z(depth, lat)
             #convert to observation units:
             df.loc[cid,'model_s'] = gsw.SP_from_SA(s,p,lon,lat) # practical salinity
             df.loc[cid,'model_t'] = f.temp[0,iz,iy,ix].values # celcius already
