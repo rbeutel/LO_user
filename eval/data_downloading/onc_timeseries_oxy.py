@@ -92,9 +92,10 @@ for cid in df.index:
         iy = zfun.find_nearest_ind(Lat, lat)
         iz = zfun.find_nearest_ind(z_rho[:,iy,ix],depth*-1)
 
-        # convert to observed units
-        df.loc[cid,'model_o'] = xr.open_dataset(fn).oxygen[0,iz,iy,ix].values / 44.661 # convert mmol/m3 to ml/l
-        print(df.loc[cid,'model_o'])
+        with xr.open_dataset(fn) as f:
+            # convert to observed units
+            df.loc[cid,'model_o'] = f.oxygen[0,iz,iy,ix].values  / 44.661 # convert mmol/m3 to ml/l
+        # print(df.loc[cid,'model_o'])
     
     else:
         pass

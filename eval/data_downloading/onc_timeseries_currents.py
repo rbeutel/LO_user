@@ -97,11 +97,13 @@ for cid in df.index:
         iy = zfun.find_nearest_ind(Lat, lat)
         iz = zfun.find_nearest_ind(z_rho[:,iy,ix],depth*-1)
 
-        df.loc[cid,'model_u'] = xr.open_dataset(fn).u[0,iz,iy,ix].values
-        print(df.loc[cid,'model_u'])
-        df.loc[cid,'model_v'] = xr.open_dataset(fn).v[0,iz,iy,ix].values
-        print(df.loc[cid,'model_v'])
-        df.loc[cid,'model_t'] = xr.open_dataset(fn).temp[0,iz,iy,ix].values + 273
+        with xr.open_dataset(fn) as f:
+            df.loc[cid,'model_t'] = f.temp[0,iz,iy,ix].values +273
+            df.loc[cid,'model_u'] = f.u[0,iz,iy,ix].values 
+            df.loc[cid,'model_v'] = f.v[0,iz,iy,ix].values
+
+        # print(df.loc[cid,'model_u'])
+        # print(df.loc[cid,'model_v'])
     
     else:
         pass

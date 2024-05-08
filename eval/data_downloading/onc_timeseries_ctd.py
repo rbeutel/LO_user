@@ -98,13 +98,12 @@ for cid in df.index:
         iy = zfun.find_nearest_ind(Lat, lat)
         iz = zfun.find_nearest_ind(z_rho[:,iy,ix],depth*-1)
 
-        s = xr.open_dataset(fn).salt[0,iz,iy,ix].values
-        p = gsw.p_from_z(depth, lat)
-        #convert to observation units:
-        df.loc[cid,'model_s'] = gsw.SP_from_SA(s,depth,lon,lat) # practical salinity
-        print(df.loc[cid,'model_s'])
-        df.loc[cid,'model_t'] = xr.open_dataset(fn).temp[0,iz,iy,ix].values + 273 # kelvin
-        print(df.loc[cid,'model_t'])
+        with xr.open_dataset(fn) as f:
+            s = f.salt[0,iz,iy,ix].values
+            p = gsw.p_from_z(depth, lat)
+            #convert to observation units:
+            df.loc[cid,'model_s'] = gsw.SP_from_SA(s,p,lon,lat) # practical salinity
+            df.loc[cid,'model_t'] = f.temp[0,iz,iy,ix].values +273
     
     else:
         pass
