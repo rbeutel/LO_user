@@ -95,6 +95,7 @@ for cid in df.index:
         with xr.open_dataset(fn) as f:
             # convert to observed units
             df.loc[cid,'model_o'] = f.oxygen[0,iz,iy,ix].values  / 44.661 # convert mmol/m3 to ml/l
+            f.close()
         # print(df.loc[cid,'model_o'])
     
     else:

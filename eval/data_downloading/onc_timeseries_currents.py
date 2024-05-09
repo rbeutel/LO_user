@@ -101,6 +101,7 @@ for cid in df.index:
             df.loc[cid,'model_t'] = f.temp[0,iz,iy,ix].values +273
             df.loc[cid,'model_u'] = f.u[0,iz,iy,ix].values 
             df.loc[cid,'model_v'] = f.v[0,iz,iy,ix].values
+            f.close()
 
         # print(df.loc[cid,'model_u'])
         # print(df.loc[cid,'model_v'])

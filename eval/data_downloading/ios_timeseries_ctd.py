@@ -110,6 +110,7 @@ for cid in df.index:
             df.loc[cid,'model_s'] = gsw.SP_from_SA(s,p,lon,lat) # practical salinity
             df.loc[cid,'model_t'] = f.temp[0,iz,iy,ix].values +273
             df.loc[cid,'model_o'] = f.oxygen[0,iz,iy,ix].values / 44.661 # convert mmol/m3 to ml/l
+            f.close()
     
     else:
         pass

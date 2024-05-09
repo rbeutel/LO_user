@@ -151,6 +151,7 @@ for cid in df.index:
             df.loc[cid,'model_u'] = f.u[0,iz,iy,ix].values 
             df.loc[cid,'model_v'] = f.v[0,iz,iy,ix].values
             df.loc[cid,'model_w'] = f.w[0,iz,iy,ix].values
+            f.close()
     
     else:
         pass

@@ -104,6 +104,7 @@ for cid in df.index:
             #convert to observation units:
             df.loc[cid,'model_s'] = gsw.SP_from_SA(s,p,lon,lat) # practical salinity
             df.loc[cid,'model_t'] = f.temp[0,iz,iy,ix].values +273
+            f.close()
     
     else:
         pass
