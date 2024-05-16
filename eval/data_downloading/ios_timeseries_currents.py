@@ -92,7 +92,7 @@ for cid in df.index:
 
     if fn.is_file():
 
-        G, S, T = zrfun.get_basic_info(fn)
+        G, S, T = zrfun.get_basic_info(fn, engine="h5netcdf")
         Lon = G['lon_rho'][0,:]
         Lat = G['lat_rho'][:,0]
         z_rho = zrfun.get_z(G['h'],np.zeros(np.shape(G['h'])),S,only_rho=True)

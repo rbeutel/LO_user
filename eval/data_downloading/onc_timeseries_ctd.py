@@ -98,7 +98,7 @@ for cid in df.index:
         iy = zfun.find_nearest_ind(Lat, lat)
         iz = zfun.find_nearest_ind(z_rho[:,iy,ix],depth*-1)
 
-        with xr.open_dataset(fn) as f:
+        with xr.open_dataset(fn, engine="h5netcdf") as f:
             s = f.salt[0,iz,iy,ix].values
             p = gsw.p_from_z(depth, lat)
             #convert to observation units:

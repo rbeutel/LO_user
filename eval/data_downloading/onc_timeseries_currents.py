@@ -97,7 +97,7 @@ for cid in df.index:
         iy = zfun.find_nearest_ind(Lat, lat)
         iz = zfun.find_nearest_ind(z_rho[:,iy,ix],depth*-1)
 
-        with xr.open_dataset(fn) as f:
+        with xr.open_dataset(fn, engine="h5netcdf") as f:
             df.loc[cid,'model_t'] = f.temp[0,iz,iy,ix].values +273
             df.loc[cid,'model_u'] = f.u[0,iz,iy,ix].values 
             df.loc[cid,'model_v'] = f.v[0,iz,iy,ix].values
