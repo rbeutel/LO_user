@@ -67,7 +67,7 @@ for profile in profiles:
     d = e.to_pandas()
     d['time (UTC)'] = pd.to_datetime(d['time (UTC)'])
     d.set_index('time (UTC)',inplace=True)
-    d = d.resample('H',axis=0).mean()
+    d = d.resample('h',axis=0).mean()
     df = pd.concat([df,d])
 
 print('erddap worked')
@@ -94,7 +94,7 @@ for cid in df.index:
 
     if fn.is_file():
 
-        G, S, T = zrfun.get_basic_info(fn, engine="h5netcdf")
+        G, S, T = zrfun.get_basic_info(fn)
         Lon = G['lon_rho'][0,:]
         Lat = G['lat_rho'][:,0]
         z_rho = zrfun.get_z(G['h'],np.zeros(np.shape(G['h'])),S,only_rho=True)
@@ -103,11 +103,11 @@ for cid in df.index:
         iy = zfun.find_nearest_ind(Lat, lat)
         iz = zfun.find_nearest_ind(z_rho[:,iy,ix],depth*-1)
 
-        with xr.open_dataset(fn) as f:
+        with xr.open_dataset(fn, engine="h5netcdf") as f:
             s = f.salt[0,iz,iy,ix].values
             p = gsw.p_from_z(depth, lat)
             #convert to observation units:
-            df.loc[cid,'model_s'] = gsw.SP_from_SA(s,p,lon,lat) # practical salinity
+            df.loc[cid,'model_s'] = gsw.SP_from_SA(s,depth,lon,lat) # practical salinity
             df.loc[cid,'model_t'] = f.temp[0,iz,iy,ix].values +273
             df.loc[cid,'model_o'] = f.oxygen[0,iz,iy,ix].values / 44.661 # convert mmol/m3 to ml/l
             f.close()

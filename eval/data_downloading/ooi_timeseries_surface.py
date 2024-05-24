@@ -144,6 +144,7 @@ for cid in df.index:
 
         with xr.open_dataset(fn, engine="h5netcdf") as f:
             s = f.salt[0,iz,iy,ix].values
+            p = gsw.p_from_z(depth, lat)
             # p = gsw.p_from_z(depth, lat)
             #convert to observation units:
             df.loc[cid,'model_s'] = gsw.SP_from_SA(s,p,lon,lat) # practical salinity
