@@ -1,6 +1,8 @@
 # matching OCNMS mooring data to model
 # looking at 2014 and 2015
 
+# NOTE - patchy data and velocity units dont seem to be m/s
+
 import scipy.io
 from datetime import datetime, timedelta
 import numpy as np

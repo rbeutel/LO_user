@@ -148,6 +148,7 @@ cython_debug/
 *.sav
 *.png
 *jpeg
+*.mat
 
 # suggested in LO README
 .DS_Store
