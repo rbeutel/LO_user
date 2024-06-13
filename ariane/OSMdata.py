@@ -1,6 +1,5 @@
 # lets get the OSM output into a nice formate for visualisations
 import xarray as xr
-import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
