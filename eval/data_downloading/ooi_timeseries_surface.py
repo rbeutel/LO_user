@@ -3,7 +3,7 @@
 #####################################################
 
 # run:
-# python3 ooi_timeseries_ctd.py ooi-ce06issm 17
+# python3 ooi_timeseries_surface.py ooi-ce06issm 17
 
 import argparse
 from erddapy import ERDDAP

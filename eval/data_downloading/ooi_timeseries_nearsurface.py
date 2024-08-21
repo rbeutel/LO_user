@@ -54,7 +54,7 @@ def get_his_fn_from_dt(dt):
 # num1 = str(27)
 # num2 = str(26)
 #         nearsurface CTD,           nearsurface velocity,      near surface oxygen,        near surface nitrate
-suffix = ['-rid'+num1+'-03-ctdbpc000','-rid'+num2+'-04-velpta000','-rid'+num1+'-03-dostad000', '-rid'+num2+'-07-nutnrb000']
+suffix = ['-rid'+num1+'-03-ctdbpc000','-rid'+num2+'-04-velpta000','-rid'+num1+'-04-dostad000', '-rid'+num2+'-07-nutnrb000']
 
 
 # CTD first

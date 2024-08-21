@@ -77,7 +77,7 @@ index = pd.Index(range(len(df)))
 df.set_index(index,inplace=True)
 
 # make some empty columns to fill the model data into:
-df['model_s'] = np.nan
+df['model_SA'] = np.nan
 df['model_t'] = np.nan
 df['model_o'] = np.nan
 
@@ -107,8 +107,9 @@ for cid in df.index:
             s = f.salt[0,iz,iy,ix].values
             p = gsw.p_from_z(depth, lat)
             #convert to observation units:
-            df.loc[cid,'model_s'] = gsw.SP_from_SA(s,depth,lon,lat) # practical salinity
-            df.loc[cid,'model_t'] = f.temp[0,iz,iy,ix].values +273
+            # df.loc[cid,'model_s'] = gsw.SP_from_SA(s,depth,lon,lat) # practical salinity
+            df.loc[cid,'model_SA'] = f.salt[0,iz,iy,ix].values
+            df.loc[cid,'model_t'] = f.temp[0,iz,iy,ix].values
             df.loc[cid,'model_o'] = f.oxygen[0,iz,iy,ix].values / 44.661 # convert mmol/m3 to ml/l
             f.close()
     

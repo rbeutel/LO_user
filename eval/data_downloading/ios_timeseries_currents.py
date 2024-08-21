@@ -92,7 +92,7 @@ for cid in df.index:
 
     if fn.is_file():
 
-        G, S, T = zrfun.get_basic_info(fn, engine="h5netcdf")
+        G, S, T = zrfun.get_basic_info(fn)
         Lon = G['lon_rho'][0,:]
         Lat = G['lat_rho'][:,0]
         z_rho = zrfun.get_z(G['h'],np.zeros(np.shape(G['h'])),S,only_rho=True)
@@ -101,7 +101,7 @@ for cid in df.index:
         iy = zfun.find_nearest_ind(Lat, lat)
         iz = zfun.find_nearest_ind(z_rho[:,iy,ix],depth*-1)
 
-        with xr.open_dataset(fn) as f:
+        with xr.open_dataset(fn, engine="h5netcdf") as f:
             df.loc[cid,'model_u'] = f.u[0,iz,iy,ix].values 
             df.loc[cid,'model_v'] = f.v[0,iz,iy,ix].values
             df.loc[cid,'model_w'] = f.w[0,iz,iy,ix].values
