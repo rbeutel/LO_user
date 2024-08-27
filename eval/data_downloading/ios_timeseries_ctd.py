@@ -104,13 +104,13 @@ for cid in df.index:
         iz = zfun.find_nearest_ind(z_rho[:,iy,ix],depth*-1)
 
         with xr.open_dataset(fn, engine="h5netcdf") as f:
-            s = f.salt[0,iz,iy,ix].values
-            p = gsw.p_from_z(depth, lat)
+            # s = f.salt[0,iz,iy,ix].values
+            # p = gsw.p_from_z(depth, lat)
             #convert to observation units:
             # df.loc[cid,'model_s'] = gsw.SP_from_SA(s,depth,lon,lat) # practical salinity
             df.loc[cid,'model_SA'] = f.salt[0,iz,iy,ix].values
             df.loc[cid,'model_t'] = f.temp[0,iz,iy,ix].values
-            df.loc[cid,'model_o'] = f.oxygen[0,iz,iy,ix].values / 44.661 # convert mmol/m3 to ml/l
+            df.loc[cid,'model_o'] = f.oxygen[0,iz,iy,ix].values #/ 44.661 # convert mmol/m3 to ml/l
             f.close()
     
     else:
