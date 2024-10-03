@@ -21,8 +21,8 @@ Ldir = Lfun.Lstart()
 
 testing = False
 
-source_list = ['LineP']# 'dfo1','ecology','LineP','nceiSalish','nceiCoastal','nceiPNW','NHL'
-otype = 'ctd'
+source_list = ['ecology_nc']# 'dfo1','ecology','LineP','nceiSalish','nceiCoastal','nceiPNW','NHL'
+otype = 'bottle'
 year = '2023'
 gtx_list = ['cas7_t0_x4b']#cas6_v0_live cas7_t0_x4b
 
@@ -38,7 +38,7 @@ for gtx in gtx_list:
     df_dict[gtx] = pd.DataFrame()
 
 cid0 = 0
-path = Path("/data1/parker/LO_output")
+path = Path("/agdat1/parker/LO_output")
 for source in source_list:
     print('\n'+source)
     
