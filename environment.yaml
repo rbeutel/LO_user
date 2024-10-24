@@ -30,6 +30,7 @@ dependencies:
   - nco
   - netcdf-fortran
   - gfortran
+  - gdb
   - numpy
   - pandas
   - pip
