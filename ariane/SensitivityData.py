@@ -8,12 +8,13 @@ import numpy as np
 upendday = [dt.datetime(2013, 10, 24), dt.datetime(2014, 9, 3), 
             dt.datetime(2015, 9, 5), dt.datetime(2016, 9, 13), 
             dt.datetime(2017, 10, 12), dt.datetime(2018, 9, 6), 
-            dt.datetime(2020, 10, 17),
-            dt.datetime(2021, 9, 22), dt.datetime(2022, 10, 15)]  # Start dates
+            dt.datetime(2019, 11, 5),dt.datetime(2020, 10, 17),
+            dt.datetime(2021, 9, 22), dt.datetime(2022, 10, 15), 
+            dt.datetime(2023, 9, 22)]  # Start dates
 
 # downwelling runs
-dwendday = [dt.datetime(2014, 3, 6), dt.datetime(2016, 3, 19),dt.datetime(2017, 4, 19), dt.datetime(2018, 2, 1),
-          dt.datetime(2020, 1, 27),dt.datetime(2021, 2, 2), dt.datetime(2022, 1, 25)]
+dwendday = [dt.datetime(2014, 3, 6), dt.datetime(2015, 2, 12), dt.datetime(2016, 3, 19),dt.datetime(2017, 4, 19), dt.datetime(2018, 2, 1),
+          dt.datetime(2019, 4, 6), dt.datetime(2020, 1, 27),dt.datetime(2021, 2, 2), dt.datetime(2022, 1, 25),dt.datetime(2023, 4, 19)]
 
 ###########
 # Tracers #
