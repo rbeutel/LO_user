@@ -79,9 +79,10 @@ for i in range(len(regions)):
         mydata = do_no3
         df.loc[i,'NO3'] = np.average(mydata.init_salt[boolean].values, weights=transport)
         df.loc[i,'DO'] = np.average(mydata.init_temp[boolean].values, weights=transport)
+        # convert TA and DIC from mmol/m3 to umol/kg in this step too
         mydata = ta_dic
-        df.loc[i,'DIC'] = np.average(mydata.init_salt[boolean].values, weights=transport)
-        df.loc[i,'TA'] = np.average(mydata.init_temp[boolean].values, weights=transport)
+        df.loc[i,'DIC'] = np.average(mydata.init_salt[boolean].values/(s_t.init_dens[boolean].values+1000)*1000, weights=transport)
+        df.loc[i,'TA'] = np.average(mydata.init_temp[boolean].values/(s_t.init_dens[boolean].values+1000)*1000, weights=transport)
     else: # for every other section we care about the "final" (ie. the conditions at the outer boundaries)
         # get data
         transport = mydata.final_transp[boolean].values
@@ -91,9 +92,10 @@ for i in range(len(regions)):
         mydata = do_no3
         df.loc[i,'NO3'] = np.average(mydata.final_salt[boolean].values, weights=transport)
         df.loc[i,'DO'] = np.average(mydata.final_temp[boolean].values, weights=transport)
+        # convert TA and DIC from mmol/m3 to umol/kg in this step too
         mydata = ta_dic
-        df.loc[i,'DIC'] = np.average(mydata.final_salt[boolean].values, weights=transport)
-        df.loc[i,'TA'] = np.average(mydata.final_temp[boolean].values, weights=transport)
+        df.loc[i,'DIC'] = np.average(mydata.final_salt[boolean].values/(s_t.final_dens[boolean].values+1000)*1000, weights=transport)
+        df.loc[i,'TA'] = np.average(mydata.final_temp[boolean].values/(s_t.final_dens[boolean].values+1000)*1000, weights=transport)
 
 # save the file
 filename = './{}_{}.csv'.format(updown,file[:4])

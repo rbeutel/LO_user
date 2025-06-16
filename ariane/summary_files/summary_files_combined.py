@@ -67,12 +67,39 @@ df.loc[0,'salt'] = np.average(np.append(Dst.init_salt[Dstbool].values, np.append
 df.loc[0,'temp'] = np.average(np.append(Dst.init_temp[Dstbool].values, np.append(Sst.init_temp[Sstbool].values,np.append(Ust.init_temp[Ustbool],Fst.init_temp[Fstbool]))),weights=transport)
 df.loc[0,'NO3'] = np.average(np.append(Ddn.init_salt[Dstbool].values, np.append(Sdn.init_salt[Sstbool].values,np.append(Udn.init_salt[Ustbool],Fdn.init_salt[Fstbool]))),weights=transport)
 df.loc[0,'DO'] = np.average(np.append(Ddn.init_temp[Dstbool].values, np.append(Sdn.init_temp[Sstbool].values,np.append(Udn.init_temp[Ustbool],Fdn.init_temp[Fstbool]))),weights=transport)
-df.loc[0,'DIC'] = np.average(np.append(Dtd.init_salt[Dstbool].values, np.append(Std.init_salt[Sstbool].values,np.append(Utd.init_salt[Ustbool],Ftd.init_salt[Fstbool]))),weights=transport)
-df.loc[0,'TA'] = np.average(np.append(Dtd.init_temp[Dstbool].values, np.append(Std.init_temp[Sstbool].values,np.append(Utd.init_temp[Ustbool],Ftd.init_temp[Fstbool]))),weights=transport)
-df.loc[0,'[TA-DIC]'] = np.average(np.append(Dtd.init_temp[Dstbool].values, np.append(Std.init_temp[Sstbool].values,np.append(Utd.init_temp[Ustbool],Ftd.init_temp[Fstbool])))
-                                  -np.append(Dtd.init_salt[Dstbool].values, np.append(Std.init_salt[Sstbool].values,np.append(Utd.init_salt[Ustbool],Ftd.init_salt[Fstbool]))),weights=transport)
+# ta, dic converted to the proper units for init values
+Ddens = Dst.init_dens.values
+Dta = Dtd.init_temp.values/(Ddens+1000)*1000
+Ddic = Dtd.init_salt.values/(Ddens+1000)*1000 
+Sdens = Sst.init_dens.values
+Sta = Std.init_temp.values/(Sdens+1000)*1000
+Sdic = Std.init_salt.values/(Sdens+1000)*1000
+Udens = Ust.init_dens.values
+Uta = Utd.init_temp.values/(Udens+1000)*1000
+Udic = Utd.init_salt.values/(Udens+1000)*1000
+Fdens = Fst.init_dens.values
+Fta = Ftd.init_temp.values/(Fdens+1000)*1000
+Fdic = Ftd.init_salt.values/(Fdens+1000)*1000
+df.loc[0,'DIC'] = np.average(np.append(Ddic[Dstbool], np.append(Sdic[Sstbool],np.append(Udic[Ustbool],Fdic[Fstbool]))),weights=transport)
+df.loc[0,'TA'] = np.average(np.append(Dta[Dstbool], np.append(Sta[Sstbool],np.append(Uta[Ustbool],Fta[Fstbool]))),weights=transport)
+df.loc[0,'[TA-DIC]'] = np.average(np.append(Dta[Dstbool], np.append(Sta[Sstbool],np.append(Uta[Ustbool],Fta[Fstbool])))
+                                  -np.append(Ddic[Dstbool], np.append(Sdic[Sstbool],np.append(Udic[Ustbool],Fdic[Fstbool]))),weights=transport)
 
 # for the rest of the water masses we use final properties, because we care about the properties of the water masses at they enter the region (before mixing with the other water masses)
+# ta, dic converted to the proper units for init values
+Ddens = Dst.final_dens.values
+Dta = Dtd.final_temp.values/(Ddens+1000)*1000
+Ddic = Dtd.final_salt.values/(Ddens+1000)*1000 
+Sdens = Sst.final_dens.values
+Sta = Std.final_temp.values/(Sdens+1000)*1000
+Sdic = Std.final_salt.values/(Sdens+1000)*1000
+Udens = Ust.final_dens.values
+Uta = Utd.final_temp.values/(Udens+1000)*1000
+Udic = Utd.final_salt.values/(Udens+1000)*1000
+Fdens = Fst.final_dens.values
+Fta = Ftd.final_temp.values/(Fdens+1000)*1000
+Fdic = Ftd.final_salt.values/(Fdens+1000)*1000
+
 # loop
 Dstbool = ((abs(Dst.init_t-Dst.final_t) > 24) & (Dst.final_section==bdy_loo))
 Sstbool = ((abs(Sst.init_t-Sst.final_t) > 24) & (Sst.final_section==bdy_loo))
@@ -84,10 +111,10 @@ df.loc[7,'salt'] = np.average(np.append(Dst.final_salt[Dstbool].values, np.appen
 df.loc[7,'temp'] = np.average(np.append(Dst.final_temp[Dstbool].values, np.append(Sst.final_temp[Sstbool].values,np.append(Ust.final_temp[Ustbool],Fst.final_temp[Fstbool]))),weights=transport)
 df.loc[7,'NO3'] = np.average(np.append(Ddn.final_salt[Dstbool].values, np.append(Sdn.final_salt[Sstbool].values,np.append(Udn.final_salt[Ustbool],Fdn.final_salt[Fstbool]))),weights=transport)
 df.loc[7,'DO'] = np.average(np.append(Ddn.final_temp[Dstbool].values, np.append(Sdn.final_temp[Sstbool].values,np.append(Udn.final_temp[Ustbool],Fdn.final_temp[Fstbool]))),weights=transport)
-df.loc[7,'DIC'] = np.average(np.append(Dtd.final_salt[Dstbool].values, np.append(Std.final_salt[Sstbool].values,np.append(Utd.final_salt[Ustbool],Ftd.final_salt[Fstbool]))),weights=transport)
-df.loc[7,'TA'] = np.average(np.append(Dtd.final_temp[Dstbool].values, np.append(Std.final_temp[Sstbool].values,np.append(Utd.final_temp[Ustbool],Ftd.final_temp[Fstbool]))),weights=transport)
-df.loc[7,'[TA-DIC]'] = np.average(np.append(Dtd.final_temp[Dstbool].values, np.append(Std.final_temp[Sstbool].values,np.append(Utd.final_temp[Ustbool],Ftd.final_temp[Fstbool])))
-                                  -np.append(Dtd.final_salt[Dstbool].values, np.append(Std.final_salt[Sstbool].values,np.append(Utd.final_salt[Ustbool],Ftd.final_salt[Fstbool]))),weights=transport)
+df.loc[7,'DIC'] = np.average(np.append(Ddic[Dstbool], np.append(Sdic[Sstbool],np.append(Udic[Ustbool],Fdic[Fstbool]))),weights=transport)
+df.loc[7,'TA'] = np.average(np.append(Dta[Dstbool], np.append(Sta[Sstbool],np.append(Uta[Ustbool],Fta[Fstbool]))),weights=transport)
+df.loc[7,'[TA-DIC]'] = np.average(np.append(Dta[Dstbool], np.append(Sta[Sstbool],np.append(Uta[Ustbool],Fta[Fstbool])))
+                                  -np.append(Ddic[Dstbool], np.append(Sdic[Sstbool],np.append(Udic[Ustbool],Fdic[Fstbool]))),weights=transport)
 
 # fresh
 Dstbool = ((Dst.final_salt < saltdiv) & (Dst.final_section==bdy_sou))
@@ -100,11 +127,10 @@ df.loc[6,'salt'] = np.average(np.append(Dst.final_salt[Dstbool].values, np.appen
 df.loc[6,'temp'] = np.average(np.append(Dst.final_temp[Dstbool].values, np.append(Sst.final_temp[Sstbool].values,np.append(Ust.final_temp[Ustbool],Fst.final_temp[Fstbool]))),weights=transport)
 df.loc[6,'NO3'] = np.average(np.append(Ddn.final_salt[Dstbool].values, np.append(Sdn.final_salt[Sstbool].values,np.append(Udn.final_salt[Ustbool],Fdn.final_salt[Fstbool]))),weights=transport)
 df.loc[6,'DO'] = np.average(np.append(Ddn.final_temp[Dstbool].values, np.append(Sdn.final_temp[Sstbool].values,np.append(Udn.final_temp[Ustbool],Fdn.final_temp[Fstbool]))),weights=transport)
-df.loc[6,'DIC'] = np.average(np.append(Dtd.final_salt[Dstbool].values, np.append(Std.final_salt[Sstbool].values,np.append(Utd.final_salt[Ustbool],Ftd.final_salt[Fstbool]))),weights=transport)
-df.loc[6,'TA'] = np.average(np.append(Dtd.final_temp[Dstbool].values, np.append(Std.final_temp[Sstbool].values,np.append(Utd.final_temp[Ustbool],Ftd.final_temp[Fstbool]))),weights=transport)
-df.loc[6,'[TA-DIC]'] = np.average(np.append(Dtd.final_temp[Dstbool].values, np.append(Std.final_temp[Sstbool].values,np.append(Utd.final_temp[Ustbool],Ftd.final_temp[Fstbool])))
-                                  -np.append(Dtd.final_salt[Dstbool].values, np.append(Std.final_salt[Sstbool].values,np.append(Utd.final_salt[Ustbool],Ftd.final_salt[Fstbool]))),weights=transport)
-
+df.loc[6,'DIC'] = np.average(np.append(Ddic[Dstbool], np.append(Sdic[Sstbool],np.append(Udic[Ustbool],Fdic[Fstbool]))),weights=transport)
+df.loc[6,'TA'] = np.average(np.append(Dta[Dstbool], np.append(Sta[Sstbool],np.append(Uta[Ustbool],Fta[Fstbool]))),weights=transport)
+df.loc[6,'[TA-DIC]'] = np.average(np.append(Dta[Dstbool], np.append(Sta[Sstbool],np.append(Uta[Ustbool],Fta[Fstbool])))
+                                  -np.append(Ddic[Dstbool], np.append(Sdic[Sstbool],np.append(Udic[Ustbool],Fdic[Fstbool]))),weights=transport)
 
 # south
 Dstbool = ((Dst.final_salt>=saltdiv) & (Dst.final_salt < sdiv) & (Dst.final_section==bdy_sou))
@@ -117,10 +143,10 @@ df.loc[5,'salt'] = np.average(np.append(Dst.final_salt[Dstbool].values, np.appen
 df.loc[5,'temp'] = np.average(np.append(Dst.final_temp[Dstbool].values, np.append(Sst.final_temp[Sstbool].values,np.append(Ust.final_temp[Ustbool],Fst.final_temp[Fstbool]))),weights=transport)
 df.loc[5,'NO3'] = np.average(np.append(Ddn.final_salt[Dstbool].values, np.append(Sdn.final_salt[Sstbool].values,np.append(Udn.final_salt[Ustbool],Fdn.final_salt[Fstbool]))),weights=transport)
 df.loc[5,'DO'] = np.average(np.append(Ddn.final_temp[Dstbool].values, np.append(Sdn.final_temp[Sstbool].values,np.append(Udn.final_temp[Ustbool],Fdn.final_temp[Fstbool]))),weights=transport)
-df.loc[5,'DIC'] = np.average(np.append(Dtd.final_salt[Dstbool].values, np.append(Std.final_salt[Sstbool].values,np.append(Utd.final_salt[Ustbool],Ftd.final_salt[Fstbool]))),weights=transport)
-df.loc[5,'TA'] = np.average(np.append(Dtd.final_temp[Dstbool].values, np.append(Std.final_temp[Sstbool].values,np.append(Utd.final_temp[Ustbool],Ftd.final_temp[Fstbool]))),weights=transport)
-df.loc[5,'[TA-DIC]'] = np.average(np.append(Dtd.final_temp[Dstbool].values, np.append(Std.final_temp[Sstbool].values,np.append(Utd.final_temp[Ustbool],Ftd.final_temp[Fstbool])))
-                                  -np.append(Dtd.final_salt[Dstbool].values, np.append(Std.final_salt[Sstbool].values,np.append(Utd.final_salt[Ustbool],Ftd.final_salt[Fstbool]))),weights=transport)
+df.loc[5,'DIC'] = np.average(np.append(Ddic[Dstbool], np.append(Sdic[Sstbool],np.append(Udic[Ustbool],Fdic[Fstbool]))),weights=transport)
+df.loc[5,'TA'] = np.average(np.append(Dta[Dstbool], np.append(Sta[Sstbool],np.append(Uta[Ustbool],Fta[Fstbool]))),weights=transport)
+df.loc[5,'[TA-DIC]'] = np.average(np.append(Dta[Dstbool], np.append(Sta[Sstbool],np.append(Uta[Ustbool],Fta[Fstbool])))
+                                  -np.append(Ddic[Dstbool], np.append(Sdic[Sstbool],np.append(Udic[Ustbool],Fdic[Fstbool]))),weights=transport)
 
 
 # cuc
@@ -134,10 +160,10 @@ df.loc[1,'salt'] = np.average(np.append(Dst.final_salt[Dstbool].values, np.appen
 df.loc[1,'temp'] = np.average(np.append(Dst.final_temp[Dstbool].values, np.append(Sst.final_temp[Sstbool].values,np.append(Ust.final_temp[Ustbool],Fst.final_temp[Fstbool]))),weights=transport)
 df.loc[1,'NO3'] = np.average(np.append(Ddn.final_salt[Dstbool].values, np.append(Sdn.final_salt[Sstbool].values,np.append(Udn.final_salt[Ustbool],Fdn.final_salt[Fstbool]))),weights=transport)
 df.loc[1,'DO'] = np.average(np.append(Ddn.final_temp[Dstbool].values, np.append(Sdn.final_temp[Sstbool].values,np.append(Udn.final_temp[Ustbool],Fdn.final_temp[Fstbool]))),weights=transport)
-df.loc[1,'DIC'] = np.average(np.append(Dtd.final_salt[Dstbool].values, np.append(Std.final_salt[Sstbool].values,np.append(Utd.final_salt[Ustbool],Ftd.final_salt[Fstbool]))),weights=transport)
-df.loc[1,'TA'] = np.average(np.append(Dtd.final_temp[Dstbool].values, np.append(Std.final_temp[Sstbool].values,np.append(Utd.final_temp[Ustbool],Ftd.final_temp[Fstbool]))),weights=transport)
-df.loc[1,'[TA-DIC]'] = np.average(np.append(Dtd.final_temp[Dstbool].values, np.append(Std.final_temp[Sstbool].values,np.append(Utd.final_temp[Ustbool],Ftd.final_temp[Fstbool])))
-                                  -np.append(Dtd.final_salt[Dstbool].values, np.append(Std.final_salt[Sstbool].values,np.append(Utd.final_salt[Ustbool],Ftd.final_salt[Fstbool]))),weights=transport)
+df.loc[1,'DIC'] = np.average(np.append(Ddic[Dstbool], np.append(Sdic[Sstbool],np.append(Udic[Ustbool],Fdic[Fstbool]))),weights=transport)
+df.loc[1,'TA'] = np.average(np.append(Dta[Dstbool], np.append(Sta[Sstbool],np.append(Uta[Ustbool],Fta[Fstbool]))),weights=transport)
+df.loc[1,'[TA-DIC]'] = np.average(np.append(Dta[Dstbool], np.append(Sta[Sstbool],np.append(Uta[Ustbool],Fta[Fstbool])))
+                                  -np.append(Ddic[Dstbool], np.append(Sdic[Sstbool],np.append(Udic[Ustbool],Fdic[Fstbool]))),weights=transport)
 
 
 # off_d
@@ -151,10 +177,10 @@ df.loc[2,'salt'] = np.average(np.append(Dst.final_salt[Dstbool].values, np.appen
 df.loc[2,'temp'] = np.average(np.append(Dst.final_temp[Dstbool].values, np.append(Sst.final_temp[Sstbool].values,np.append(Ust.final_temp[Ustbool],Fst.final_temp[Fstbool]))),weights=transport)
 df.loc[2,'NO3'] = np.average(np.append(Ddn.final_salt[Dstbool].values, np.append(Sdn.final_salt[Sstbool].values,np.append(Udn.final_salt[Ustbool],Fdn.final_salt[Fstbool]))),weights=transport)
 df.loc[2,'DO'] = np.average(np.append(Ddn.final_temp[Dstbool].values, np.append(Sdn.final_temp[Sstbool].values,np.append(Udn.final_temp[Ustbool],Fdn.final_temp[Fstbool]))),weights=transport)
-df.loc[2,'DIC'] = np.average(np.append(Dtd.final_salt[Dstbool].values, np.append(Std.final_salt[Sstbool].values,np.append(Utd.final_salt[Ustbool],Ftd.final_salt[Fstbool]))),weights=transport)
-df.loc[2,'TA'] = np.average(np.append(Dtd.final_temp[Dstbool].values, np.append(Std.final_temp[Sstbool].values,np.append(Utd.final_temp[Ustbool],Ftd.final_temp[Fstbool]))),weights=transport)
-df.loc[2,'[TA-DIC]'] = np.average(np.append(Dtd.final_temp[Dstbool].values, np.append(Std.final_temp[Sstbool].values,np.append(Utd.final_temp[Ustbool],Ftd.final_temp[Fstbool])))
-                                  -np.append(Dtd.final_salt[Dstbool].values, np.append(Std.final_salt[Sstbool].values,np.append(Utd.final_salt[Ustbool],Ftd.final_salt[Fstbool]))),weights=transport)
+df.loc[2,'DIC'] = np.average(np.append(Ddic[Dstbool], np.append(Sdic[Sstbool],np.append(Udic[Ustbool],Fdic[Fstbool]))),weights=transport)
+df.loc[2,'TA'] = np.average(np.append(Dta[Dstbool], np.append(Sta[Sstbool],np.append(Uta[Ustbool],Fta[Fstbool]))),weights=transport)
+df.loc[2,'[TA-DIC]'] = np.average(np.append(Dta[Dstbool], np.append(Sta[Sstbool],np.append(Uta[Ustbool],Fta[Fstbool])))
+                                  -np.append(Ddic[Dstbool], np.append(Sdic[Sstbool],np.append(Udic[Ustbool],Fdic[Fstbool]))),weights=transport)
 
 
 # off_s
@@ -168,11 +194,10 @@ df.loc[3,'salt'] = np.average(np.append(Dst.final_salt[Dstbool].values, np.appen
 df.loc[3,'temp'] = np.average(np.append(Dst.final_temp[Dstbool].values, np.append(Sst.final_temp[Sstbool].values,np.append(Ust.final_temp[Ustbool],Fst.final_temp[Fstbool]))),weights=transport)
 df.loc[3,'NO3'] = np.average(np.append(Ddn.final_salt[Dstbool].values, np.append(Sdn.final_salt[Sstbool].values,np.append(Udn.final_salt[Ustbool],Fdn.final_salt[Fstbool]))),weights=transport)
 df.loc[3,'DO'] = np.average(np.append(Ddn.final_temp[Dstbool].values, np.append(Sdn.final_temp[Sstbool].values,np.append(Udn.final_temp[Ustbool],Fdn.final_temp[Fstbool]))),weights=transport)
-df.loc[3,'DIC'] = np.average(np.append(Dtd.final_salt[Dstbool].values, np.append(Std.final_salt[Sstbool].values,np.append(Utd.final_salt[Ustbool],Ftd.final_salt[Fstbool]))),weights=transport)
-df.loc[3,'TA'] = np.average(np.append(Dtd.final_temp[Dstbool].values, np.append(Std.final_temp[Sstbool].values,np.append(Utd.final_temp[Ustbool],Ftd.final_temp[Fstbool]))),weights=transport)
-df.loc[3,'[TA-DIC]'] = np.average(np.append(Dtd.final_temp[Dstbool].values, np.append(Std.final_temp[Sstbool].values,np.append(Utd.final_temp[Ustbool],Ftd.final_temp[Fstbool])))
-                                  -np.append(Dtd.final_salt[Dstbool].values, np.append(Std.final_salt[Sstbool].values,np.append(Utd.final_salt[Ustbool],Ftd.final_salt[Fstbool]))),weights=transport)
-
+df.loc[3,'DIC'] = np.average(np.append(Ddic[Dstbool], np.append(Sdic[Sstbool],np.append(Udic[Ustbool],Fdic[Fstbool]))),weights=transport)
+df.loc[3,'TA'] = np.average(np.append(Dta[Dstbool], np.append(Sta[Sstbool],np.append(Uta[Ustbool],Fta[Fstbool]))),weights=transport)
+df.loc[3,'[TA-DIC]'] = np.average(np.append(Dta[Dstbool], np.append(Sta[Sstbool],np.append(Uta[Ustbool],Fta[Fstbool])))
+                                  -np.append(Ddic[Dstbool], np.append(Sdic[Sstbool],np.append(Udic[Ustbool],Fdic[Fstbool]))),weights=transport)
 
 # north
 Dstbool = ((Dst.final_section==bdy_nor))
@@ -185,11 +210,10 @@ df.loc[4,'salt'] = np.average(np.append(Dst.final_salt[Dstbool].values, np.appen
 df.loc[4,'temp'] = np.average(np.append(Dst.final_temp[Dstbool].values, np.append(Sst.final_temp[Sstbool].values,np.append(Ust.final_temp[Ustbool],Fst.final_temp[Fstbool]))),weights=transport)
 df.loc[4,'NO3'] = np.average(np.append(Ddn.final_salt[Dstbool].values, np.append(Sdn.final_salt[Sstbool].values,np.append(Udn.final_salt[Ustbool],Fdn.final_salt[Fstbool]))),weights=transport)
 df.loc[4,'DO'] = np.average(np.append(Ddn.final_temp[Dstbool].values, np.append(Sdn.final_temp[Sstbool].values,np.append(Udn.final_temp[Ustbool],Fdn.final_temp[Fstbool]))),weights=transport)
-df.loc[4,'DIC'] = np.average(np.append(Dtd.final_salt[Dstbool].values, np.append(Std.final_salt[Sstbool].values,np.append(Utd.final_salt[Ustbool],Ftd.final_salt[Fstbool]))),weights=transport)
-df.loc[4,'TA'] = np.average(np.append(Dtd.final_temp[Dstbool].values, np.append(Std.final_temp[Sstbool].values,np.append(Utd.final_temp[Ustbool],Ftd.final_temp[Fstbool]))),weights=transport)
-df.loc[4,'[TA-DIC]'] = np.average(np.append(Dtd.final_temp[Dstbool].values, np.append(Std.final_temp[Sstbool].values,np.append(Utd.final_temp[Ustbool],Ftd.final_temp[Fstbool])))
-                                  -np.append(Dtd.final_salt[Dstbool].values, np.append(Std.final_salt[Sstbool].values,np.append(Utd.final_salt[Ustbool],Ftd.final_salt[Fstbool]))),weights=transport)
-
+df.loc[4,'DIC'] = np.average(np.append(Ddic[Dstbool], np.append(Sdic[Sstbool],np.append(Udic[Ustbool],Fdic[Fstbool]))),weights=transport)
+df.loc[4,'TA'] = np.average(np.append(Dta[Dstbool], np.append(Sta[Sstbool],np.append(Uta[Ustbool],Fta[Fstbool]))),weights=transport)
+df.loc[4,'[TA-DIC]'] = np.average(np.append(Dta[Dstbool], np.append(Sta[Sstbool],np.append(Uta[Ustbool],Fta[Fstbool])))
+                                  -np.append(Ddic[Dstbool], np.append(Sdic[Sstbool],np.append(Udic[Ustbool],Fdic[Fstbool]))),weights=transport)
 
 # save the file
 filename = './combo_{}.csv'.format(fileUP[:4])
