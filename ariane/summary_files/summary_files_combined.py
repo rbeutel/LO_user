@@ -62,6 +62,10 @@ Sstbool = ((abs(Sst.init_t-Sst.final_t) > 24) & ~np.isnan(Sst.final_section))
 Ustbool = ((abs(Ust.init_t-Ust.final_t) > 24) & ~np.isnan(Ust.final_section))
 Fstbool = ((abs(Fst.init_t-Fst.final_t) > 24) & ~np.isnan(Fst.final_section))
 transport = np.append(Dst.init_transp[Dstbool].values, np.append(Sst.init_transp[Sstbool].values,np.append(Ust.init_transp[Ustbool],Fst.init_transp[Fstbool])))
+
+# # test
+# print(np.sum(transport))
+
 df.loc[0,'transport'] = np.sum(transport)
 df.loc[0,'salt'] = np.average(np.append(Dst.init_salt[Dstbool].values, np.append(Sst.init_salt[Sstbool].values,np.append(Ust.init_salt[Ustbool],Fst.init_salt[Fstbool]))),weights=transport)
 df.loc[0,'temp'] = np.average(np.append(Dst.init_temp[Dstbool].values, np.append(Sst.init_temp[Sstbool].values,np.append(Ust.init_temp[Ustbool],Fst.init_temp[Fstbool]))),weights=transport)
@@ -216,6 +220,6 @@ df.loc[4,'[TA-DIC]'] = np.average(np.append(Dta[Dstbool], np.append(Sta[Sstbool]
                                   -np.append(Ddic[Dstbool], np.append(Sdic[Sstbool],np.append(Udic[Ustbool],Fdic[Fstbool]))),weights=transport)
 
 # save the file
-filename = './combo_{}.csv'.format(fileUP[:4])
+filename = './test/combo_{}.csv'.format(fileUP[:4])
 df.to_csv(filename)
 print(filename)
